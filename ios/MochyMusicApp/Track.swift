@@ -6,4 +6,5 @@ struct Track: Identifiable, Equatable {
     let artist: String
     let streamURL: URL
     var artworkURL: URL? = nil
+    var httpUserAgent: String? = nil
 }

@@ -2,6 +2,7 @@ import Foundation
 
 actor YouTubeStreamResolver {
     static let shared = YouTubeStreamResolver()
+    static let userAgent = "com.google.visionos.youtube/1.04(RealityDevice17,1; U; CPU visionOS 26_6_0 like Mac OS X; US)"
 
     private var visitorData: String?
     private let session: URLSession
@@ -91,7 +92,7 @@ actor YouTubeStreamResolver {
         request.setValue(formatVersion, forHTTPHeaderField: "X-Goog-Api-Format-Version")
         request.setValue("101", forHTTPHeaderField: "X-YouTube-Client-Name")
         request.setValue("1.04", forHTTPHeaderField: "X-YouTube-Client-Version")
-        request.setValue("com.google.visionos.youtube/1.04(RealityDevice17,1; U; CPU visionOS 26_6_0 like Mac OS X; US)", forHTTPHeaderField: "User-Agent")
+        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         if let visitorData {
             request.setValue(visitorData, forHTTPHeaderField: "X-Goog-Visitor-Id")

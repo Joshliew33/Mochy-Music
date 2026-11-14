@@ -36,7 +36,7 @@ final class AudioPlayer: ObservableObject {
                 let streamURL = try await YouTubeStreamResolver.shared.resolve(videoID: song.id)
                 guard !Task.isCancelled else { return }
                 resolvingTrackID = nil
-                startPlayback(Track(title: song.title, artist: song.artist, streamURL: streamURL, artworkURL: song.thumbnailURL))
+                startPlayback(Track(title: song.title, artist: song.artist, streamURL: streamURL, artworkURL: song.thumbnailURL, httpUserAgent: YouTubeStreamResolver.userAgent))
             } catch {
                 guard !Task.isCancelled else { return }
                 resolvingTrackID = nil
@@ -78,7 +78,12 @@ final class AudioPlayer: ObservableObject {
         duration = 0
         errorMessage = nil
 
-        let item = AVPlayerItem(url: track.streamURL)
+        var assetOptions: [String: Any] = [:]
+        if let userAgent = track.httpUserAgent {
+            assetOptions[AVURLAssetHTTPUserAgentKey] = userAgent
+        }
+        let asset = AVURLAsset(url: track.streamURL, options: assetOptions)
+        let item = AVPlayerItem(asset: asset)
         let nextPlayer = AVPlayer(playerItem: item)
         player = nextPlayer
         wantsPlayback = true
