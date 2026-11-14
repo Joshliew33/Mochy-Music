@@ -126,13 +126,14 @@ struct ContentView: View {
                         Spacer(minLength: 0)
                     }.contentShape(Rectangle())
                 }.buttonStyle(.plain).accessibilityLabel("打开播放器")
+                    .accessibilityValue("\(player.currentSong?.title ?? player.currentTrack?.title ?? "")，\(player.currentSong?.artist ?? player.currentTrack?.artist ?? "")")
                 Button { player.togglePlayback() } label: {
                     if player.isBuffering { ProgressView().tint(.primary).frame(width: 44, height: 44) }
                     else { Image(systemName: player.isPlaying ? "pause.fill" : "play.fill").font(.title3).frame(width: 44, height: 44) }
                 }
                 .foregroundStyle(.primary).buttonStyle(.plain)
                 .accessibilityLabel(player.isPlaying || player.isBuffering ? "暂停" : "播放")
-                Button { player.next() } label: { Image(systemName: "forward.end.fill").font(.title3).frame(width: 40, height: 44) }
+                Button { player.next() } label: { Image(systemName: "forward.end.fill").font(.title3).frame(width: 44, height: 44) }
                     .foregroundStyle(.primary).buttonStyle(.plain)
                     .disabled(!player.queue.canNext).accessibilityLabel("下一首")
             }.padding(.leading, 12).padding(.trailing, 8).padding(.vertical, 8)
@@ -165,7 +166,10 @@ struct SongRow: View {
     var play: () -> Void
     var body: some View {
         HStack(spacing: 12) {
-            Button(action: play) {
+            Button {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                play()
+            } label: {
                 HStack(spacing: 12) {
                     CoverImage(url: song.thumbnailURL, size: 50)
                     VStack(alignment: .leading, spacing: 4) {
@@ -254,9 +258,9 @@ struct SearchView: View {
             }
             if search.isLoading { ProgressView("搜索中…") }
             if let error = search.errorMessage { Text(error).foregroundStyle(.secondary) }
-            if !search.results.isEmpty { Button { player.play(search.results) } label: { Label("播放搜索结果", systemImage: "play.fill") } }
+            if !search.results.isEmpty { Button { UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil); player.play(search.results) } label: { Label("播放搜索结果", systemImage: "play.fill") } }
             ForEach(Array(search.results.enumerated()), id: \.element.id) { index, song in SongRow(song: song) { player.play(search.results, startAt: index) } }
-        }.navigationTitle("搜索")
+        }.navigationTitle("搜索").scrollDismissesKeyboard(.interactively)
             .searchable(text: $query, prompt: "歌曲或歌手")
             .onSubmit(of: .search) { search.search(query) }
             .onChange(of: query) { _, value in if value.isEmpty { search.search("") } }
@@ -526,7 +530,7 @@ struct SettingsView: View {
                 Text("歌词查询会将歌曲名称、歌手和时长发送给 LRCLIB；收藏、歌单和历史默认保存在本机。").font(.caption).foregroundStyle(.secondary)
             }
             if let message { Text(message).font(.footnote).textSelection(.enabled) }
-        }.navigationTitle("设置")
+        }.navigationTitle("设置").scrollDismissesKeyboard(.interactively)
             .fileExporter(isPresented: $export, document: document, contentType: .json, defaultFilename: "MochyMusic-backup") { result in if case .failure(let error) = result { message = error.localizedDescription } }
             .fileImporter(isPresented: $importFile, allowedContentTypes: [.json]) { result in
                 do {
