@@ -11,6 +11,11 @@
         A10000000000000000000004 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* AudioPlayer.swift */; };
         A10000000000000000000005 /* YouTubeMusicSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* YouTubeMusicSearch.swift */; };
         A10000000000000000000006 /* YouTubeStreamResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* YouTubeStreamResolver.swift */; };
+        B10000000000000000000010 /* MusicModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000010 /* MusicModels.swift */; };
+        B10000000000000000000011 /* LibraryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000011 /* LibraryStore.swift */; };
+        B10000000000000000000012 /* CatalogAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000012 /* CatalogAPI.swift */; };
+        B10000000000000000000013 /* LyricsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000013 /* LyricsService.swift */; };
+        B10000000000000000000014 /* YouTubeAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000014 /* YouTubeAccount.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +27,11 @@
         A20000000000000000000006 /* MochyMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MochyMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
         A20000000000000000000007 /* YouTubeMusicSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeMusicSearch.swift; sourceTree = "<group>"; };
         A20000000000000000000008 /* YouTubeStreamResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeStreamResolver.swift; sourceTree = "<group>"; };
+        B20000000000000000000010 /* MusicModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicModels.swift; sourceTree = "<group>"; };
+        B20000000000000000000011 /* LibraryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryStore.swift; sourceTree = "<group>"; };
+        B20000000000000000000012 /* CatalogAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogAPI.swift; sourceTree = "<group>"; };
+        B20000000000000000000013 /* LyricsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsService.swift; sourceTree = "<group>"; };
+        B20000000000000000000014 /* YouTubeAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAccount.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +58,11 @@
                 A20000000000000000000004 /* AudioPlayer.swift */,
                 A20000000000000000000007 /* YouTubeMusicSearch.swift */,
                 A20000000000000000000008 /* YouTubeStreamResolver.swift */,
+                B20000000000000000000010 /* MusicModels.swift */,
+                B20000000000000000000011 /* LibraryStore.swift */,
+                B20000000000000000000012 /* CatalogAPI.swift */,
+                B20000000000000000000013 /* LyricsService.swift */,
+                B20000000000000000000014 /* YouTubeAccount.swift */,
                 A20000000000000000000005 /* Info.plist */,
             );
         };
@@ -69,6 +84,11 @@
                 A10000000000000000000003 /* Track.swift in Sources */,
                 A10000000000000000000004 /* AudioPlayer.swift in Sources */,
                 A10000000000000000000005 /* YouTubeMusicSearch.swift in Sources */,
+                B10000000000000000000010 /* MusicModels.swift in Sources */,
+                B10000000000000000000011 /* LibraryStore.swift in Sources */,
+                B10000000000000000000012 /* CatalogAPI.swift in Sources */,
+                B10000000000000000000013 /* LyricsService.swift in Sources */,
+                B10000000000000000000014 /* YouTubeAccount.swift in Sources */,
                 A10000000000000000000006 /* YouTubeStreamResolver.swift in Sources */,
             );
             runOnlyForDeploymentPostprocessing = 0;
@@ -149,7 +169,7 @@
             isa = XCBuildConfiguration;
             buildSettings = {
                 CURRENT_PROJECT_VERSION = 1;
-                MARKETING_VERSION = 0.1.0;
+                MARKETING_VERSION = 0.2.0;
                 CODE_SIGN_STYLE = Automatic;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = MochyMusicApp/Info.plist;
@@ -166,7 +186,7 @@
             isa = XCBuildConfiguration;
             buildSettings = {
                 CURRENT_PROJECT_VERSION = 1;
-                MARKETING_VERSION = 0.1.0;
+                MARKETING_VERSION = 0.2.0;
                 CODE_SIGN_STYLE = Automatic;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = MochyMusicApp/Info.plist;

@@ -36,6 +36,16 @@ jobs:
           swiftc ios/MochyMusicApp/YouTubeStreamResolver.swift ios/Tests/StreamResolverChecks.swift -o "$RUNNER_TEMP/resolver-checks"
           "$RUNNER_TEMP/resolver-checks"
 
+      - name: Configure optional Google OAuth
+        env:
+          GOOGLE_OAUTH_CLIENT_ID: ${{ vars.GOOGLE_OAUTH_CLIENT_ID }}
+        run: python3 ios/Scripts/configure_oauth.py
+
+      - name: Check library, queue, lyrics and catalog parsing
+        run: |
+          swiftc ios/MochyMusicApp/MusicModels.swift ios/MochyMusicApp/LibraryStore.swift ios/MochyMusicApp/CatalogAPI.swift ios/Tests/LibraryAndQueueChecks.swift -o "$RUNNER_TEMP/library-checks"
+          "$RUNNER_TEMP/library-checks"
+
       - name: Build for iOS Simulator
         run: >-
           xcodebuild
@@ -43,6 +53,7 @@ jobs:
           -scheme MochyMusic
           -configuration Debug
           -destination 'generic/platform=iOS Simulator'
+          CURRENT_PROJECT_VERSION=${{ github.run_number }}
           CODE_SIGNING_ALLOWED=NO
           build
 
@@ -54,6 +65,7 @@ jobs:
           -configuration Release
           -destination 'generic/platform=iOS'
           -derivedDataPath build/ios-device
+          CURRENT_PROJECT_VERSION=${{ github.run_number }}
           CODE_SIGNING_ALLOWED=NO
           build
 

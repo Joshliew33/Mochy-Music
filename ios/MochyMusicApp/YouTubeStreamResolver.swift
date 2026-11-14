@@ -17,6 +17,7 @@ actor YouTubeStreamResolver {
         let playability = response["playabilityStatus"] as? [String: Any]
         let status = playability?["status"] as? String
         guard status == "OK" else {
+            visitorData = nil
             throw ResolverError.unavailable(playability?["reason"] as? String ?? "YouTube did not allow this track to play.")
         }
 
