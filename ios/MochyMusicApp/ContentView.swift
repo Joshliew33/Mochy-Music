@@ -60,14 +60,14 @@ struct ContentView: View {
         VStack(spacing: 10) {
             if let error = player.errorMessage {
                 HStack(spacing: 10) {
-                    Image(systemName: "exclamationmark.circle.fill").foregroundStyle(.orange)
-                    Text(error).font(.caption).lineLimit(2).frame(maxWidth: .infinity, alignment: .leading)
-                    Button { player.errorMessage = nil } label: { Image(systemName: "xmark").frame(width: 32, height: 32) }
+                    Image(systemName: "exclamationmark.circle.fill").font(.system(size: 18)).foregroundStyle(.orange)
+                    Text(error).font(.caption).dynamicTypeSize(...DynamicTypeSize.accessibility1).lineLimit(2).frame(maxWidth: .infinity, alignment: .leading).onTapGesture { showPlayer = true }
+                    Button { player.errorMessage = nil } label: { Image(systemName: "xmark").font(.system(size: 14, weight: .semibold)).frame(width: 44, height: 44) }
                         .accessibilityLabel("关闭错误提示")
                 }
                 .padding(.leading, 16).padding(.trailing, 8).padding(.vertical, 6)
                 .glassPill().accessibilityIdentifier("playback-error")
-                .onTapGesture { showPlayer = true }
+
             }
             if player.currentSong != nil || player.currentTrack != nil { miniPlayer }
             navigationPill
@@ -124,16 +124,16 @@ struct ContentView: View {
                                 .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                         }
                         Spacer(minLength: 0)
-                    }.contentShape(Rectangle())
+                    }.dynamicTypeSize(...DynamicTypeSize.accessibility1).contentShape(Rectangle())
                 }.buttonStyle(.plain).accessibilityLabel("打开播放器")
                     .accessibilityValue("\(player.currentSong?.title ?? player.currentTrack?.title ?? "")，\(player.currentSong?.artist ?? player.currentTrack?.artist ?? "")")
                 Button { player.togglePlayback() } label: {
                     if player.isBuffering { ProgressView().tint(.primary).frame(width: 44, height: 44) }
-                    else { Image(systemName: player.isPlaying ? "pause.fill" : "play.fill").font(.title3).frame(width: 44, height: 44) }
+                    else { Image(systemName: player.isPlaying ? "pause.fill" : "play.fill").font(.system(size: 20, weight: .semibold)).frame(width: 44, height: 44) }
                 }
                 .foregroundStyle(.primary).buttonStyle(.plain)
                 .accessibilityLabel(player.isPlaying || player.isBuffering ? "暂停" : "播放")
-                Button { player.next() } label: { Image(systemName: "forward.end.fill").font(.title3).frame(width: 44, height: 44) }
+                Button { player.next() } label: { Image(systemName: "forward.end.fill").font(.system(size: 20, weight: .semibold)).frame(width: 44, height: 44) }
                     .foregroundStyle(.primary).buttonStyle(.plain)
                     .disabled(!player.queue.canNext).accessibilityLabel("下一首")
             }.padding(.leading, 12).padding(.trailing, 8).padding(.vertical, 8)
@@ -350,14 +350,14 @@ struct PlayerView: View {
                     }
                     HStack(spacing: 26) {
                         Button { player.previous() } label: {
-                            Image(systemName: "backward.end.fill").font(.title2).frame(width: 58, height: 58)
+                            Image(systemName: "backward.end.fill").font(.system(size: 24, weight: .semibold)).frame(width: 58, height: 58)
                         }.disabled(player.currentSong == nil).accessibilityLabel("上一首")
                         Button { player.togglePlayback() } label: {
                             Image(systemName: player.isPlaying || player.isBuffering ? "pause.fill" : "play.fill")
                                 .font(.system(size: 32, weight: .semibold)).frame(width: 82, height: 82)
                         }.accessibilityLabel(player.isPlaying || player.isBuffering ? "暂停" : "播放")
                         Button { player.next() } label: {
-                            Image(systemName: "forward.end.fill").font(.title2).frame(width: 58, height: 58)
+                            Image(systemName: "forward.end.fill").font(.system(size: 24, weight: .semibold)).frame(width: 58, height: 58)
                         }.disabled(!player.queue.canNext).accessibilityLabel("下一首")
                     }.foregroundStyle(.primary).buttonStyle(GlassButtonStyle())
                     if player.isBuffering { ProgressView("加载音频…").tint(.mint) }
@@ -379,7 +379,7 @@ struct PlayerView: View {
                                     .frame(maxWidth: .infinity).frame(height: 46)
                             }.accessibilityLabel(library.isFavorite(song) ? "取消收藏" : "收藏")
                         }
-                    }.font(.title3).buttonStyle(GlassButtonStyle())
+                    }.font(.system(size: 20, weight: .semibold)).buttonStyle(GlassButtonStyle())
                     NavigationLink { QueueView() } label: {
                         HStack(spacing: 12) {
                             Image(systemName: "list.bullet")
@@ -387,7 +387,7 @@ struct PlayerView: View {
                             Spacer()
                             Text("\(player.queue.entries.count)").font(.caption.monospacedDigit()).foregroundStyle(.secondary)
                             Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
-                        }.padding(.horizontal, 18).frame(height: 50).foregroundStyle(.primary)
+                        }.dynamicTypeSize(...DynamicTypeSize.accessibility1).padding(.horizontal, 18).frame(minHeight: 50).foregroundStyle(.primary)
                     }.buttonStyle(GlassButtonStyle())
                     if let song = player.currentSong { LyricsPanel(song: song) }
                 }.padding(24)
@@ -397,7 +397,7 @@ struct PlayerView: View {
             .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { dismiss() } label: { Image(systemName: "chevron.down").font(.subheadline.weight(.semibold)).frame(width: 40, height: 40) }
+                    Button { dismiss() } label: { Image(systemName: "chevron.down").font(.system(size: 15, weight: .semibold)).frame(width: 40, height: 40) }
                         .buttonStyle(GlassButtonStyle()).foregroundStyle(.primary).accessibilityLabel("收起播放器")
                 }
             }
