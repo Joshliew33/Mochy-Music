@@ -15,6 +15,14 @@ Native SwiftUI client, minimum iOS 17.0. Open `MochyMusic.xcodeproj` and select 
 
 Google login is unavailable until the repository owner configures an iOS OAuth client. See [ACCOUNT_SETUP.md](ACCOUNT_SETUP.md). No Google credentials are included in the source or IPA. YouTube Music account-only recommendations and every category of its private library are not exposed by the official YouTube Data API; cloud sync covers the playlists that API makes accessible.
 
+## Glass interface in 0.2.1
+
+The mini player and custom navigation pills share one bottom safe-area layout, so opening playback reserves space for both rather than overlapping a system tab bar. The dock hides while the keyboard is visible. Transport, repeat/shuffle/favorite and queue controls use the same glass shapes.
+
+iOS 26 uses SwiftUI Liquid Glass when built with Xcode 26+. iOS 17/18 use an ultra-thin-material fallback; Reduce Transparency uses an opaque surface, and Reduce Motion removes custom press/selection animation. Accessibility text sizes keep the navigation icons at usable touch sizes.
+
+CI builds with the macOS 26/Xcode 26 runner and launches isolated iPhone 16 and iPhone SE simulators with a paused queue fixture. It captures the mini player, navigation, expanded player and accessibility text-size layouts. The fixture is written only to the CI simulator data directory and is not included in the Release IPA.
+
 ## Build and checks
 
 `.github/workflows/ios-build.yml` runs stream-selection regression checks, queue/library/lyrics/catalog checks, OAuth configuration checks, an iOS Simulator build, and a Release iPhone build. The iPhone artifact contains an unsigned IPA that needs signing before installation. Build success does not verify real-world YouTube access, Google account authorization, or physical-device interruptions.

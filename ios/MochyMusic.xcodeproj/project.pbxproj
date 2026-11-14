@@ -16,6 +16,7 @@
         B10000000000000000000012 /* CatalogAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000012 /* CatalogAPI.swift */; };
         B10000000000000000000013 /* LyricsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000013 /* LyricsService.swift */; };
         B10000000000000000000014 /* YouTubeAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000014 /* YouTubeAccount.swift */; };
+        B10000000000000000000015 /* GlassStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000000000000000000015 /* GlassStyle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
         B20000000000000000000012 /* CatalogAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogAPI.swift; sourceTree = "<group>"; };
         B20000000000000000000013 /* LyricsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LyricsService.swift; sourceTree = "<group>"; };
         B20000000000000000000014 /* YouTubeAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAccount.swift; sourceTree = "<group>"; };
+        B20000000000000000000015 /* GlassStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassStyle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
                 B20000000000000000000012 /* CatalogAPI.swift */,
                 B20000000000000000000013 /* LyricsService.swift */,
                 B20000000000000000000014 /* YouTubeAccount.swift */,
+                B20000000000000000000015 /* GlassStyle.swift */,
                 A20000000000000000000005 /* Info.plist */,
             );
         };
@@ -89,6 +92,7 @@
                 B10000000000000000000012 /* CatalogAPI.swift in Sources */,
                 B10000000000000000000013 /* LyricsService.swift in Sources */,
                 B10000000000000000000014 /* YouTubeAccount.swift in Sources */,
+                B10000000000000000000015 /* GlassStyle.swift in Sources */,
                 A10000000000000000000006 /* YouTubeStreamResolver.swift in Sources */,
             );
             runOnlyForDeploymentPostprocessing = 0;
@@ -169,7 +173,7 @@
             isa = XCBuildConfiguration;
             buildSettings = {
                 CURRENT_PROJECT_VERSION = 1;
-                MARKETING_VERSION = 0.2.0;
+                MARKETING_VERSION = 0.2.1;
                 CODE_SIGN_STYLE = Automatic;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = MochyMusicApp/Info.plist;
@@ -186,7 +190,7 @@
             isa = XCBuildConfiguration;
             buildSettings = {
                 CURRENT_PROJECT_VERSION = 1;
-                MARKETING_VERSION = 0.2.0;
+                MARKETING_VERSION = 0.2.1;
                 CODE_SIGN_STYLE = Automatic;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = MochyMusicApp/Info.plist;

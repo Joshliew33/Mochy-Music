@@ -43,6 +43,7 @@ final class AudioPlayer: ObservableObject {
         self.library = library
         self.queue = library.data.queue
         self.currentSong = queue.currentSong
+        self.duration = queue.currentSong?.durationSeconds ?? 0
         configureRemoteCommands()
         observeSession()
         networkMonitor.pathUpdateHandler = { [weak self] path in
