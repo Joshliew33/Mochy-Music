@@ -25,6 +25,7 @@ final class AudioPlayer: ObservableObject {
     private var artworkTask: Task<Void, Never>?
     private var loadID = UUID()
     private var retries = 0
+    private var recoveryScheduled = false
     private var recordedHistory = false
     private var pendingRecovery: Double?
     private var seekAfterLoad: Double = 0
@@ -65,7 +66,9 @@ final class AudioPlayer: ObservableObject {
         if let song = queue.currentSong { resolve(song, resetRetries: true) }
     }
     func enqueue(_ song: CatalogSong, playNext: Bool = false) {
-        queue.enqueue(song, playNext: playNext); persistQueue()
+        queue.enqueue(song, playNext: playNext)
+        if currentSong == nil && currentTrack == nil { currentSong = queue.currentSong }
+        persistQueue()
     }
     func selectQueueEntry(_ id: UUID) {
         if let song = queue.select(id) { persistQueue(); resolve(song, resetRetries: true) }
@@ -111,6 +114,7 @@ final class AudioPlayer: ObservableObject {
     private func resolve(_ song: CatalogSong, position: Double = 0, resetRetries: Bool) {
         resolutionTask?.cancel(); tearDownPlayer()
         loadID = UUID(); let requestID = loadID
+        recoveryScheduled = false
         if resetRetries { retries = 0; recordedHistory = false }
         currentSong = song; currentTrack = nil; artwork = nil
         resolvingTrackID = song.id; errorMessage = nil; wantsPlayback = true
@@ -157,6 +161,7 @@ final class AudioPlayer: ObservableObject {
 
     func togglePlayback() { wantsPlayback ? pause() : resume() }
     func pause() {
+        recoveryScheduled = false
         wantsPlayback = false; pendingRecovery = nil; resumeAfterInterruption = false
         resolutionTask?.cancel(); startupTimeoutTask?.cancel(); resolvingTrackID = nil
         isBuffering = false; isPlaying = false; player?.pause(); updateNowPlayingInfo()
@@ -244,12 +249,15 @@ final class AudioPlayer: ObservableObject {
         })
     }
     private func reportPlaybackFailure(_ error: Error?) {
+        guard !recoveryScheduled else { return }
         startupTimeoutTask?.cancel(); player?.pause(); isPlaying = false; isBuffering = false
         let position = elapsedTime
         if currentSong != nil, wantsPlayback, !isConnected {
+            recoveryScheduled = true
             pendingRecovery = position; errorMessage = "网络已断开，恢复连接后将重试。"; return
         }
         if let song = currentSong, wantsPlayback, retries < 2 {
+            recoveryScheduled = true
             retries += 1; errorMessage = "正在重新获取播放地址（\(retries)/2）…"; isBuffering = true
             let expected = loadID
             resolutionTask = Task { [weak self] in

@@ -11,6 +11,8 @@ struct LibraryAndQueueChecks {
     static func main() throws {
         let songs = [song("a"), song("b"), song("c")]
         var queue = PlaybackQueue()
+        queue.enqueue(songs[0])
+        try require(queue.currentSong == songs[0], "Adding to an empty queue must expose a playable current entry")
         queue.replace(with: songs)
         try require(queue.currentSong == songs[0], "Queue must start at the selected song")
         try require(queue.advance(automatically: true) == songs[1], "Track completion must advance")

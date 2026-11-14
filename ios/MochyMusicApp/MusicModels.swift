@@ -60,6 +60,7 @@ struct PlaybackQueue: Codable, Equatable {
             entries.append(entry)
             order.append(entry.id)
         }
+        if currentID == nil { currentID = entry.id }
     }
 
     mutating func advance(automatically: Bool) -> CatalogSong? {
