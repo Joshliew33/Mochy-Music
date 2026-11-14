@@ -157,6 +157,8 @@
         AA0000000000000000000022 /* Release target */ = {
             isa = XCBuildConfiguration;
             buildSettings = {
+                CURRENT_PROJECT_VERSION = 1;
+                MARKETING_VERSION = 0.1.0;
                 CODE_SIGN_STYLE = Automatic;
                 GENERATE_INFOPLIST_FILE = NO;
                 INFOPLIST_FILE = MochyMusicApp/Info.plist;
