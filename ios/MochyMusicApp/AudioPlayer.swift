@@ -73,9 +73,9 @@ final class AudioPlayer: ObservableObject {
 
     private func observeTime(for player: AVPlayer) {
         let interval = CMTime(seconds: 0.5, preferredTimescale: 600)
-        timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self] time in
-            Task { @MainActor [weak self] in
-                guard let self else { return }
+        timeObserver = player.addPeriodicTimeObserver(forInterval: interval, queue: .main) { [weak self, weak player] time in
+            Task { @MainActor [weak self, weak player] in
+                guard let self, let player else { return }
                 if time.seconds.isFinite {
                     self.elapsedTime = time.seconds
                 }
