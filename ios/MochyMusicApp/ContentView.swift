@@ -101,6 +101,15 @@ struct ContentView: View {
                     .font(.caption).foregroundStyle(.secondary).lineLimit(1)
             }
             Spacer(minLength: 0)
+            Button { audioPlayer.play(song) } label: {
+                if audioPlayer.resolvingTrackID == song.id {
+                    ProgressView().tint(.mint)
+                } else {
+                    Image(systemName: "play.circle.fill").font(.title2).foregroundStyle(.mint)
+                }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Play \(song.title)")
             Link(destination: URL(string: "https://music.youtube.com/watch?v=\(song.id)")!) {
                 Image(systemName: "arrow.up.right.square").foregroundStyle(.mint)
             }
@@ -140,7 +149,14 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(spacing: 14) {
                 RoundedRectangle(cornerRadius: 16).fill(.mint.gradient).frame(width: 64, height: 64)
-                    .overlay { Image(systemName: "music.note").font(.title2.weight(.semibold)).foregroundStyle(.black.opacity(0.8)) }
+                    .overlay {
+                    if let artworkURL = track.artworkURL {
+                        AsyncImage(url: artworkURL) { $0.resizable().scaledToFill() } placeholder: { Image(systemName: "music.note") }
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                    } else {
+                        Image(systemName: "music.note").font(.title2.weight(.semibold)).foregroundStyle(.black.opacity(0.8))
+                    }
+                }
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Now Playing").font(.caption.weight(.semibold)).foregroundStyle(.mint)
                     Text(track.title).font(.headline).lineLimit(1)

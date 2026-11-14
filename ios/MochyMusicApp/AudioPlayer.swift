@@ -9,7 +9,9 @@ final class AudioPlayer: ObservableObject {
     @Published private(set) var elapsedTime: TimeInterval = 0
     @Published private(set) var duration: TimeInterval = 0
     @Published var errorMessage: String?
+    @Published private(set) var resolvingTrackID: String?
 
+    private var resolutionTask: Task<Void, Never>?
     private var player: AVPlayer?
     private var timeObserver: Any?
 
@@ -17,7 +19,32 @@ final class AudioPlayer: ObservableObject {
         configureRemoteCommands()
     }
 
+    func play(_ song: CatalogSong) {
+        resolutionTask?.cancel()
+        resolvingTrackID = song.id
+        errorMessage = nil
+        resolutionTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let streamURL = try await YouTubeStreamResolver.shared.resolve(videoID: song.id)
+                guard !Task.isCancelled else { return }
+                resolvingTrackID = nil
+                startPlayback(Track(title: song.title, artist: song.artist, streamURL: streamURL, artworkURL: song.thumbnailURL))
+            } catch {
+                guard !Task.isCancelled else { return }
+                resolvingTrackID = nil
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
     func play(_ track: Track) {
+        resolutionTask?.cancel()
+        resolvingTrackID = nil
+        startPlayback(track)
+    }
+
+    private func startPlayback(_ track: Track) {
         guard track.streamURL.scheme?.lowercased() == "https" else {
             errorMessage = "Enter a valid HTTPS audio URL."
             return
