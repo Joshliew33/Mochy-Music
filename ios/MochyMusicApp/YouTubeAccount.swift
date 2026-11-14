@@ -55,7 +55,7 @@ final class YouTubeAccount: NSObject, ObservableObject, ASWebAuthenticationPrese
 
     override init() {
         super.init()
-        if let data = AccountKeychain.read(), let saved = try? JSONDecoder().decode(OAuthTokens.self, from: data) {
+        if configurationMessage == nil, let data = AccountKeychain.read(), let saved = try? JSONDecoder().decode(OAuthTokens.self, from: data) {
             tokens = saved; isSignedIn = true
         }
     }

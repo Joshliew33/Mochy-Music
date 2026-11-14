@@ -74,7 +74,7 @@ struct LibraryAndQueueChecks {
 
         let fixture: [String: Any] = ["contents": [["musicResponsiveListItemRenderer": ["playlistItemData": ["videoId": "fixture"], "flexColumns": [["musicResponsiveListItemFlexColumnRenderer": ["text": ["runs": [["text": "Title"]]]]], ["musicResponsiveListItemFlexColumnRenderer": ["text": ["runs": [["text": "Artist"], ["text": " • "], ["text": "3:15"]]]]]]]]]]
         let parsed = CatalogAPI.songs(in: fixture)
-        try require(parsed.count == 1 && parsed[0].title == "Title" && parsed[0].duration == "3:15", "Catalog parser must preserve title and identify duration metadata")
+        try require(parsed.count == 1 && parsed[0].title == "Title" && parsed[0].artist == "Artist" && parsed[0].duration == "3:15", "Catalog parser must preserve artist/title and identify duration metadata")
         print("PASS: queue transitions/shuffle/editing, persistence/backup, cloud merge, corrupt-data backup, LRC parsing and catalog metadata")
     }
 }

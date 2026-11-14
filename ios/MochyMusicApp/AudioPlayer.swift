@@ -84,6 +84,7 @@ final class AudioPlayer: ObservableObject {
             stopPlayer()
             currentSong = queue.currentSong
             if shouldPlay, let song = currentSong { resolve(song, resetRetries: true) }
+            else { updateNowPlayingInfo() }
         }
     }
     func clearQueue() {
@@ -109,6 +110,7 @@ final class AudioPlayer: ObservableObject {
         library.saveQueue(queue)
         MPRemoteCommandCenter.shared().nextTrackCommand.isEnabled = queue.canNext
         MPRemoteCommandCenter.shared().previousTrackCommand.isEnabled = queue.canPrevious || currentSong != nil
+        updateNowPlayingInfo()
     }
 
     private func resolve(_ song: CatalogSong, position: Double = 0, resetRetries: Bool) {
@@ -138,6 +140,7 @@ final class AudioPlayer: ObservableObject {
 
     func play(_ track: Track) {
         resolutionTask?.cancel(); tearDownPlayer(); loadID = UUID()
+        recoveryScheduled = false
         currentSong = nil; retries = 0; elapsedTime = 0; duration = 0; seekAfterLoad = 0
         startPlayback(track)
     }
@@ -180,6 +183,7 @@ final class AudioPlayer: ObservableObject {
         elapsedTime = position; updateNowPlayingInfo()
     }
     private func stopPlayer() {
+        recoveryScheduled = false
         resolutionTask?.cancel(); loadID = UUID(); tearDownPlayer()
         currentTrack = nil; wantsPlayback = false; isPlaying = false; isBuffering = false
         elapsedTime = 0; duration = 0; resolvingTrackID = nil; pendingRecovery = nil; artwork = nil

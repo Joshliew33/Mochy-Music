@@ -7,8 +7,10 @@ struct DiscoverySection: Identifiable {
 }
 
 enum CatalogAPI {
-    static func request(_ endpoint: String, body: [String: Any]) async throws -> [String: Any] {
-        var request = URLRequest(url: URL(string: "https://music.youtube.com/youtubei/v1/\(endpoint)?prettyPrint=false")!)
+    static func request(_ endpoint: String, body: [String: Any], queryItems: [URLQueryItem] = []) async throws -> [String: Any] {
+        var components = URLComponents(string: "https://music.youtube.com/youtubei/v1/\(endpoint)")!
+        components.queryItems = [URLQueryItem(name: "prettyPrint", value: "false")] + queryItems
+        var request = URLRequest(url: components.url!)
         request.httpMethod = "POST"; request.timeoutInterval = 20
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("67", forHTTPHeaderField: "X-YouTube-Client-Name")
@@ -29,12 +31,15 @@ enum CatalogAPI {
     }
 
     static func search(_ query: String) async throws -> [CatalogSong] {
-        let json = try await request("search", body: ["query": query, "params": "EgWKAQIIAWoKEAkQBRAKEAMQBA=="])
+        let json = try await request("search", body: ["query": query], queryItems: [URLQueryItem(name: "params", value: "EgWKAQIIAWoKEAkQBRAKEAMQBA==")])
         return songs(in: json)
     }
 
     static func discover(seed: CatalogSong?) async throws -> [DiscoverySection] {
-        let home = try await request("browse", body: ["browseId": "FEmusic_home"])
+        var home: [String: Any] = [:]
+        var failure: Error?
+        do { home = try await request("browse", body: ["browseId": "FEmusic_home"]) }
+        catch { if Task.isCancelled { throw CancellationError() }; failure = error }
         var sections: [DiscoverySection] = []
         for shelf in nodes("musicCarouselShelfRenderer", in: home) {
             let titleNode = ((shelf["header"] as? [String: Any])?["musicCarouselShelfBasicHeaderRenderer"] as? [String: Any])?["title"]
@@ -47,9 +52,12 @@ enum CatalogAPI {
             if !items.isEmpty { sections.append(DiscoverySection(title: "YouTube Music 推荐", songs: Array(items.prefix(30)))) }
         }
         if let seed {
-            let items = try await search(seed.artist)
-            if !items.isEmpty { sections.insert(DiscoverySection(title: "继续探索 · \(seed.artist)", songs: Array(items.prefix(12))), at: 0) }
+            do {
+                let items = try await search(seed.artist)
+                if !items.isEmpty { sections.insert(DiscoverySection(title: "继续探索 · \(seed.artist)", songs: Array(items.prefix(12))), at: 0) }
+            } catch { if Task.isCancelled { throw CancellationError() }; failure = error }
         }
+        if sections.isEmpty, let failure { throw failure }
         return sections
     }
 
@@ -93,7 +101,8 @@ enum CatalogAPI {
             guard let id = (node["playlistItemData"] as? [String: Any])?["videoId"] as? String, let first = columns.first else { continue }
             let title = text(first["text"])
             guard !title.isEmpty else { continue }
-            let artist = columns.count > 1 ? text(columns[1]["text"]) : "YouTube Music"
+            let metadata = columns.count > 1 ? text(columns[1]["text"]) : "YouTube Music"
+            let artist = metadata.components(separatedBy: " • ").first ?? metadata
             let duration = columns.flatMap { ($0["text"] as? [String: Any])?["runs"] as? [[String: Any]] ?? [] }.compactMap { $0["text"] as? String }.first { $0.range(of: #"^\d+(?::\d{2}){1,2}$"#, options: .regularExpression) != nil }
             songs.append(CatalogSong(id: id, title: title, artist: artist, duration: duration, thumbnailURL: thumbnail(in: node)))
         }
