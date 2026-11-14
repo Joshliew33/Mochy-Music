@@ -1,0 +1,42 @@
+name: iOS Build
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios-build.yml"
+  pull_request:
+    branches: ["**"]
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build iOS Simulator App
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: List Xcode schemes
+        run: xcodebuild -list -project ios/MochyMusic.xcodeproj
+
+      - name: Build for iOS Simulator
+        run: >-
+          xcodebuild
+          -project ios/MochyMusic.xcodeproj
+          -scheme MochyMusic
+          -configuration Debug
+          -destination 'generic/platform=iOS Simulator'
+          CODE_SIGNING_ALLOWED=NO
+          build
