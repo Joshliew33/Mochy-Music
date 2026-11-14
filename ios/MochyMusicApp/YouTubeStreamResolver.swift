@@ -4,6 +4,11 @@ actor YouTubeStreamResolver {
     static let shared = YouTubeStreamResolver()
 
     private var visitorData: String?
+    private let session: URLSession
+
+    init(session: URLSession = .shared) {
+        self.session = session
+    }
 
     func resolve(videoID: String) async throws -> URL {
         let visitor = try await getVisitorData()
@@ -18,7 +23,8 @@ actor YouTubeStreamResolver {
         let formats = streamingData?["adaptiveFormats"] as? [[String: Any]] ?? []
         let playable = formats.compactMap { format -> (Int, URL)? in
             guard let mimeType = format["mimeType"] as? String,
-                  mimeType.lowercased().hasPrefix("audio/"),
+                  mimeType.lowercased().hasPrefix("audio/mp4"),
+                  (!mimeType.contains("codecs=") || mimeType.lowercased().contains("mp4a")),
                   let rawURL = format["url"] as? String,
                   let url = URL(string: rawURL),
                   url.scheme == "https" else { return nil }
@@ -87,9 +93,12 @@ actor YouTubeStreamResolver {
         request.setValue("1.04", forHTTPHeaderField: "X-YouTube-Client-Version")
         request.setValue("com.google.visionos.youtube/1.04(RealityDevice17,1; U; CPU visionOS 26_6_0 like Mac OS X; US)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        if let visitorData {
+            request.setValue(visitorData, forHTTPHeaderField: "X-Goog-Visitor-Id")
+        }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             throw ResolverError.requestFailed
         }
@@ -111,7 +120,7 @@ actor YouTubeStreamResolver {
             case .invalidVisitor: return "YouTube could not start a playback session."
             case .invalidResponse: return "YouTube returned an unreadable playback response."
             case .requestFailed: return "Could not contact YouTube to resolve this song."
-            case .noDirectAudio: return "YouTube did not return a directly playable audio stream for this song."
+            case .noDirectAudio: return "YouTube did not return an AAC/MP4 audio stream supported by this iOS player."
             case let .unavailable(reason): return reason
             }
         }

@@ -18,13 +18,14 @@ struct ContentView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     header
+                    if let error = audioPlayer.errorMessage {
+                        Text(error).font(.footnote).foregroundStyle(.red)
+                            .textSelection(.enabled)
+                            .accessibilityIdentifier("playback-error")
+                    }
                     searchSection
                     if let track = audioPlayer.currentTrack { nowPlaying(track) }
                     directStreamSection
-                    if let error = audioPlayer.errorMessage {
-                        Text(error).font(.footnote).foregroundStyle(.red)
-                            .accessibilityIdentifier("playback-error")
-                    }
                 }
                 .padding(20)
             }
@@ -172,9 +173,12 @@ struct ContentView: View {
                     Text(timestamp(audioPlayer.elapsedTime)); Spacer(); Text(timestamp(audioPlayer.duration))
                 }.font(.caption.monospacedDigit()).foregroundStyle(.secondary)
             }
+            if audioPlayer.isBuffering {
+                ProgressView("Loading audio…").tint(.mint)
+            }
             Button { audioPlayer.togglePlayback() } label: {
-                Label(audioPlayer.isPlaying ? "Pause" : "Resume",
-                      systemImage: audioPlayer.isPlaying ? "pause.fill" : "play.fill")
+                Label((audioPlayer.isPlaying || audioPlayer.isBuffering) ? "Pause" : "Resume",
+                      systemImage: (audioPlayer.isPlaying || audioPlayer.isBuffering) ? "pause.fill" : "play.fill")
                     .font(.headline).frame(maxWidth: .infinity).padding(.vertical, 12)
             }
             .buttonStyle(.borderedProminent).tint(.mint)

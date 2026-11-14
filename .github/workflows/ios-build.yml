@@ -31,6 +31,11 @@ jobs:
       - name: List Xcode schemes
         run: xcodebuild -list -project ios/MochyMusic.xcodeproj
 
+      - name: Check stream format selection
+        run: |
+          swiftc ios/MochyMusicApp/YouTubeStreamResolver.swift ios/Tests/StreamResolverChecks.swift -o "$RUNNER_TEMP/resolver-checks"
+          "$RUNNER_TEMP/resolver-checks"
+
       - name: Build for iOS Simulator
         run: >-
           xcodebuild
