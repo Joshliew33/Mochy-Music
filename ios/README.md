@@ -4,7 +4,7 @@ This folder starts a native SwiftUI iOS client alongside the existing Android ap
 
 ## Current slice
 
-The app provides a native AVPlayer playback path for a direct HTTP(S) audio URL, configures the iOS playback audio session, enables background audio, and publishes lock-screen / headset transport controls and now-playing metadata.
+The app provides a native AVPlayer playback path for a direct HTTPS audio URL, configures the iOS playback audio session, enables background audio, and publishes lock-screen / headset transport controls and now-playing metadata.
 
 ## Open and run
 

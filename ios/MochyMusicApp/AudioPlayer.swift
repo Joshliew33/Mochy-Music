@@ -18,8 +18,8 @@ final class AudioPlayer: ObservableObject {
     }
 
     func play(_ track: Track) {
-        guard ["https", "http"].contains(track.streamURL.scheme?.lowercased() ?? "") else {
-            errorMessage = "Enter a valid HTTP or HTTPS audio URL."
+        guard track.streamURL.scheme?.lowercased() == "https" else {
+            errorMessage = "Enter a valid HTTPS audio URL."
             return
         }
 

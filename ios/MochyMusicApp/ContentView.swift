@@ -7,7 +7,7 @@ struct ContentView: View {
 
     private var parsedURL: URL? {
         guard let url = URL(string: streamURL.trimmingCharacters(in: .whitespacesAndNewlines)),
-              ["https", "http"].contains(url.scheme?.lowercased() ?? "") else {
+              url.scheme?.lowercased() == "https" else {
             return nil
         }
         return url
@@ -148,9 +148,9 @@ struct ContentView: View {
                 .disabled(audioPlayer.duration <= 0)
 
                 HStack {
-                    Text(audioPlayer.elapsedTime, format: .time(pattern: .minuteSecond))
+                    Text(timestamp(audioPlayer.elapsedTime))
                     Spacer()
-                    Text(audioPlayer.duration, format: .time(pattern: .minuteSecond))
+                    Text(timestamp(audioPlayer.duration))
                 }
                 .font(.caption.monospacedDigit())
                 .foregroundStyle(.secondary)
@@ -172,5 +172,10 @@ struct ContentView: View {
         }
         .padding(18)
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 22))
+    }
+    private func timestamp(_ seconds: TimeInterval) -> String {
+        guard seconds.isFinite else { return "0:00" }
+        let totalSeconds = max(0, Int(seconds))
+        return "\(totalSeconds / 60):\(String(format: "%02d", totalSeconds % 60))"
     }
 }
